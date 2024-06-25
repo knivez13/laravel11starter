@@ -1,9 +1,10 @@
 <script setup>
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
+import useForm from '@/composables/useForm';
 
 import { useAuthStore } from '@/stores/useAuthStore.js';
-const {} = storeToRefs(useAuthStore());
+const { error, processing } = storeToRefs(useAuthStore());
 const { loginUser } = useAuthStore();
 
 const rules = {
@@ -21,6 +22,7 @@ const login = async () => {
     const result = await v$.value.$validate();
     if (result) {
         await loginUser(state.value);
+        v$.$reset();
     }
 };
 
@@ -32,30 +34,41 @@ const logoUrl = computed(() => {
 <template>
     <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
         <div class="flex flex-column align-items-center justify-content-center">
-            <img :src="logoUrl" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0" />
-            <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
+            <!-- <img :src="logoUrl" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0" /> -->
+            <!-- <img src="/CentralOneLogo.png" alt="Image" height="30" class="mb-3" /> -->
+            <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--red-color) 0%, rgba(33, 150, 243, 0) 30%)">
                 <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius: 53px">
                     <div class="text-center mb-5">
-                        <h2 class="text-600 font-medium">Sign in</h2>
+                        <img src="/CentralOneLogo.png" alt="Image" height="30" class="mb-3" />
+                        <div class="text-900 text-3xl font-medium mb-3"></div>
+                        <span class="text-600 font-medium">Sign in to continue</span>
                     </div>
+                    <div class="flex justify-content-center text-red-500" v-if="error"><b>Wrong email or password</b></div>
 
                     <div>
-                        <Form @submit.prevent="login">
-                            <label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
-                            <InputText id="email1" type="text" placeholder="Email address" class="w-full md:w-30rem mb-5" style="padding: 1rem" v-model="state.email" />
-                            <div v-if="v$.email.$error" class="text-red-500">Group Section field has an error.</div>
+                        <label class="block text-900 text-xl font-medium mb-2">Email</label>
+                        <InputText type="text" :loading="processing" :disabled="processing" placeholder="Email address" class="w-full md:w-30rem" style="padding: 1rem" v-model="state.email" />
+                        <div v-if="v$.email.$error" class="text-red-500">Email field is required.</div>
 
-                            <label for="password1" class="block text-900 font-medium text-xl mb-2">Password</label>
-                            <Password id="password1" v-model="state.password" placeholder="Password" :toggleMask="true" :feedback="false" class="w-full mb-3" inputClass="w-full" :inputStyle="{ padding: '1rem' }"></Password>
-                            <div v-if="v$.password.$error" class="text-red-500">Group Section field has an error.</div>
+                        <label class="block text-900 font-medium text-xl mb-2 mt-2">Password </label>
+                        <Password v-model="state.password" :loading="processing" :disabled="processing" :feedback="false" placeholder="Password" :toggleMask="true" class="w-full" inputClass="w-full" :inputStyle="{ padding: '1rem' }"></Password>
+                        <div v-if="v$.password.$error" class="text-red-500">Password field is required.</div>
 
-                            <Button label="Sign In" class="w-full p-3 text-xl" type="submit"></Button>
-                        </Form>
+                        <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                            <div class="flex align-items-center">
+                                <small class="block text-400 mb-2 mt-2">
+                                    <b class="text-red-500">NOTE</b>: If you forget your password,<br />
+                                    please request a password reset at the lobby. <br />
+                                </small>
+                            </div>
+                        </div>
+                        <Button label="Sign In" :loading="processing" :disabled="processing" class="w-full p-3 text-xl" @click="login"></Button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <AppConfig simple />
 </template>
 
 <style scoped>

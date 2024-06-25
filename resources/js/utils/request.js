@@ -21,7 +21,7 @@ service.interceptors.request.use(
         return config;
     },
     (error) => {
-        console.log(error); // for debug
+        // console.log(error); // for debug
         Promise.reject(error);
     }
 );
@@ -30,7 +30,7 @@ service.interceptors.response.use(
         return response.data;
     },
     (error) => {
-        console.log(error);
+        // console.log(error);
         switch (error.response.status) {
             case 200:
                 console.log('OK');
@@ -41,7 +41,7 @@ service.interceptors.response.use(
                 break;
             case 404:
                 console.log('Not found');
-                router.push('/auth/access');
+                // router.push('/auth/access');
                 break;
             case 419:
                 console.log('Session expired');

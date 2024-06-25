@@ -15,11 +15,6 @@ class AuthRepository
 
     public function login($data)
     {
-        $count = User::where('email', '=', $data['email'])->count();
-
-        if ($count == 0) {
-            return 'Your id Number not exsist';
-        }
 
         if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
             Auth::user()->tokens()->delete();

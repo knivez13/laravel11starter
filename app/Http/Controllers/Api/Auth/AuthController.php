@@ -36,7 +36,8 @@ class AuthController extends BaseController
         }
 
         $input = Arr::only($request->all(), ['email', 'password']);
-        return $this->sendResponse($this->repo->login($input), 'login successfully.');
+        $res = $this->repo->login($input);
+        return $this->sendResponse($res, 'login successfully.');
     }
 
     public function logout(): JsonResponse

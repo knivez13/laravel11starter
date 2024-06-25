@@ -29,8 +29,8 @@
                         </template>
 
                         <template #end>
-                            <Button icon="pi pi-search" class="mr-2" label="Search" severity="secondary" outlined />
-                            <Button icon="pi pi-plus" class="" severity="secondary" outlined label="Add" />
+                            <Button icon="pi pi-search" class="mr-2" label="Search" severity="success" outlined />
+                            <Button icon="pi pi-plus" class="" severity="primary" outlined label="Add" />
                         </template>
                     </Toolbar>
                 </template>
