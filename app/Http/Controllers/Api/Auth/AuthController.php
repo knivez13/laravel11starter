@@ -32,11 +32,14 @@ class AuthController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
         $input = Arr::only($request->all(), ['email', 'password']);
         $res = $this->repo->login($input);
+        if ($res == 'Wrong Username or Password') {
+            return $this->sendError('Login Error.', $res, 401);
+        }
         return $this->sendResponse($res, 'login successfully.');
     }
 

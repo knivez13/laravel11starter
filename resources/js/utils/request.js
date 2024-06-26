@@ -4,7 +4,10 @@ import { useAuthStore } from '@/stores/useAuthStore.js';
 
 const service = axios.create({
     baseURL: '/',
-    timeout: 1000, // Request timeout
+    timeout: 60000, // Request timeout
+    withCredentials: true,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
     headers: {
         'Content-type': 'application/json',
         Accept: 'application/json'
@@ -25,37 +28,35 @@ service.interceptors.request.use(
         Promise.reject(error);
     }
 );
-service.interceptors.response.use(
-    (response) => {
-        return response.data;
-    },
-    (error) => {
-        // console.log(error);
-        switch (error.response.status) {
-            case 200:
-                console.log('OK');
-                break;
-            case 401:
-                console.log('Unauthorized');
-                router.push('/login');
-                break;
-            case 404:
-                console.log('Not found');
-                // router.push('/auth/access');
-                break;
-            case 419:
-                console.log('Session expired');
-                break;
-            case 500:
-                console.log('Internal Server Error');
-                break;
-            case 503:
-                console.log('Down for maintenance');
-                break;
-            default:
-                return Promise.reject(error);
-        }
+service.interceptors.response.use(null, (err) => {
+    const error = {
+        status: err.response?.status,
+        original: err,
+        validation: {},
+        message: null
+    };
+
+    switch (err.response?.status) {
+        case 422:
+            for (let field in err.response.data.data) {
+                error.validation[field] = err.response.data.data[field][0];
+            }
+            break;
+
+        case 403:
+            error.message = "You're not allowed to do that.";
+            break;
+        case 401:
+            error.message = 'Please re-login.';
+            break;
+        case 500:
+            error.message = 'Something went really bad. Sorry.';
+            break;
+        default:
+            error.message = 'Something went wrong. Please try again later.';
     }
-);
+
+    return Promise.reject(error);
+});
 
 export default service;

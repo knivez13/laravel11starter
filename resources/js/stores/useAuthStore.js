@@ -32,8 +32,7 @@ export const useAuthStore = defineStore('auth', {
             this.error = null;
             await csrf().then(async ({ e }) => {
                 await login(res)
-                    .then((data) => {
-                        console.log(data.data);
+                    .then(({ data }) => {
                         if (data.data == 'Wrong Username or Password') {
                             this.error = data.data;
                         }

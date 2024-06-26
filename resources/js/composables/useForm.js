@@ -1,4 +1,5 @@
 import { reactive } from 'vue';
+
 export default function useForm(fields) {
     return reactive({
         fields,
@@ -10,13 +11,13 @@ export default function useForm(fields) {
             this.error = null;
             this.processing = true;
 
-            console.log(this.processing);
-
             try {
                 await submitter(this.fields);
             } catch (err) {
+                console.log(err);
                 this.error = err;
             }
+
             this.processing = false;
         }
     });
