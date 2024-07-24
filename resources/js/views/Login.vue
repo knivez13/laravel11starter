@@ -48,14 +48,8 @@ const logoUrl = computed(() => {
                     <div>
                         <label class="block text-900 text-xl font-medium mb-2">Email</label>
                         <InputText v-model="state.email" type="text" :loading="processing" :disabled="processing" placeholder="Email address" class="w-full md:w-30rem" style="padding: 1rem" />
-                        <div v-if="error?.validation.email" class="text-red-500">
-                            {{ error?.validation.email }}
-                        </div>
                         <label class="block text-900 font-medium text-xl mb-2 mt-2">Password </label>
                         <Password v-model="state.password" :loading="processing" :disabled="processing" :feedback="false" placeholder="Password" :toggleMask="true" class="w-full" inputClass="w-full" :inputStyle="{ padding: '1rem' }"></Password>
-                        <div v-if="error?.validation.password" class="text-red-500">
-                            {{ error?.validation.password }}
-                        </div>
                         <div class="flex align-items-center justify-content-between mb-5 gap-5">
                             <div class="flex align-items-center">
                                 <small class="block text-400 mb-2 mt-2">
